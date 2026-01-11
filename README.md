@@ -27,6 +27,7 @@ This architecture implements a **"Gatekeeper"** pattern:
 
 ### 🏗️ Architecture
 
+```mermaid
 graph TD
     User[Aday (React UI)] -- 1. Sorgu İsteği --> BFF[BFF Gateway (.NET 9)]
     
@@ -41,3 +42,4 @@ graph TD
     
     Redis -.-> BFF
     BFF -.-> User
+```

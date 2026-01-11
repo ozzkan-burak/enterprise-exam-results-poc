@@ -27,8 +27,6 @@ This architecture implements a **"Gatekeeper"** pattern:
 
 ### 🏗️ Architecture
 
-### 🏗️ Architecture
-
 ```mermaid
 graph TD
     User["Aday (React UI)"] -- 1. HTTP İstek --> Middleware["Edge Middleware (Simulated Bouncer)"]

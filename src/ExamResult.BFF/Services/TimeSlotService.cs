@@ -31,7 +31,8 @@ public class TimeSlotService : ITimeSlotService
 
     // Gece testi yapıyorsak (Debug Modu):
     // Eğer saat 18:00'den sonraysa herkese izin ver (Demo yapabilmek için)
-    if (now >= 18) return true;
+    // Test için geçici olarak devre dışı bırakıldı
+    // if (now >= 18) return true;
 
     return false;
   }

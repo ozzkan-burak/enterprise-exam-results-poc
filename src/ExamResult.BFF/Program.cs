@@ -18,6 +18,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseMiddleware<ExamResult.BFF.Middlewares.EdgeSecurityMiddleware>();
+
 app.UseHttpsRedirection();
 
 app.MapControllers();

@@ -6,44 +6,42 @@ namespace ExamResult.BFF.Services;
 
 public class RabbitMQProducer : IRabbitMQProducer
 {
-  private readonly IConfiguration _configuration;
-
-  public RabbitMQProducer(IConfiguration configuration)
-  {
-    _configuration = configuration;
-  }
-
   public void SendMessage<T>(T message)
   {
-    // 1. Bağlantı Ayarları (Configuration'dan geliyor)
+    // 127.0.0.1: Localhost sorunu yaşamamak için IP kullandık.
     var factory = new ConnectionFactory
     {
-      HostName = _configuration["RabbitMQ:HostName"] ?? "localhost",
-      UserName = _configuration["RabbitMQ:UserName"] ?? "guest",
-      Password = _configuration["RabbitMQ:Password"] ?? "guest"
+      HostName = "127.0.0.1",
+      UserName = "guest",
+      Password = "guest",
+      Port = 5672
     };
 
-    // 2. Bağlantı ve Kanal Oluşturma
-    // Not: Performans için normalde bağlantı Singleton tutulur ama POC için using kullanıyoruz.
+    // Bağlantı ve kanal yönetimi
     using var connection = factory.CreateConnection();
     using var channel = connection.CreateModel();
 
-    // 3. Kuyruğu Tanımla (Yoksa oluşturur)
-    var queueName = _configuration["RabbitMQ:QueueName"] ?? "exam_requests";
-    channel.QueueDeclare(queue: queueName,
+    // Publisher Confirms (Mesajın gittiğinden emin olmak için)
+    channel.ConfirmSelect();
+
+    channel.QueueDeclare(queue: "exam_requests",
                          durable: false,
                          exclusive: false,
                          autoDelete: false,
                          arguments: null);
 
-    // 4. Mesajı JSON'a çevir
     var json = JsonSerializer.Serialize(message);
     var body = Encoding.UTF8.GetBytes(json);
 
-    // 5. Kuyruğa Fırlat! 🚀
+    var properties = channel.CreateBasicProperties();
+    properties.Persistent = false; // Mesajı diske yazma (Hız için)
+
     channel.BasicPublish(exchange: "",
-                         routingKey: queueName,
-                         basicProperties: null,
+                         routingKey: "exam_requests",
+                         basicProperties: properties,
                          body: body);
+
+    // Mesajın broker'a ulaştığını teyit et (Maks 5 saniye bekle)
+    channel.WaitForConfirmsOrDie(new TimeSpan(0, 0, 5));
   }
 }

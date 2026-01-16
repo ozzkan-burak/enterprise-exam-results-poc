@@ -12,7 +12,8 @@ public class TimeSlotService : ITimeSlotService
     int lastDigit = int.Parse(identityNo.Substring(identityNo.Length - 1));
 
     // 3. Şu anki saati al
-    var now = DateTime.Now.Hour; // Sadece saati alıyoruz (Örn: 14)
+    //var now = DateTime.Now.Hour; // Sadece saati alıyoruz (Örn: 14)
+    var now = 11; // Test için sabit saat
 
     // MANTIKSAL KURAL SETİ (TRAFFIC SHAPING)
     // Gerçek hayatta burası config dosyasından okunmalıdır.

@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  # 🐇 Mesaj Kuyruğu
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: exam-rabbitmq
+    ports:
+      - '5672:5672' # Uygulama portu
+      - '15672:15672' # Yönetim Paneli (UI)
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+
+  # 🚀 Önbellek (Daha sonra kullanacağız)
+  redis:
+    image: redis:alpine
+    container_name: exam-redis
+    ports:
+      - '6379:6379'
